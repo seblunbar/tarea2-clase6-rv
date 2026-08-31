@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Laser Input UI - Video Games</title>
+    <meta name="description" content="Laser input UI • A-Frame Video Game Showcase">
+    <script src="https://aframe.io/releases/1.8.0/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-environment-component@1.5.x/dist/aframe-environment-component.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/aframevr/aframe@gh-pages/examples/js/info-message.js"></script>
+    
+    <!-- Embedded Interactivity Logic to resolve deployment path issues -->
+    <script>
+      AFRAME.registerComponent('highlight', {
+        init: function () {
+          var buttonEls = this.buttonEls = this.el.querySelectorAll('.menu-button');
+          this.onClick = this.onClick.bind(this);
+          this.onMouseEnter = this.onMouseEnter.bind(this);
+          this.onMouseLeave = this.onMouseLeave.bind(this);
+          for (var i = 0; i < buttonEls.length; i++) {
+            buttonEls[i].addEventListener('mouseenter', this.onMouseEnter);
+            buttonEls[i].addEventListener('mouseleave', this.onMouseLeave);
+          }
+        },
+        onMouseEnter: function (evt) {
+          evt.target.setAttribute('scale', '1.2 1.2 1.2');
+        },
+        onMouseLeave: function (evt) {
+          evt.target.setAttribute('scale', '1 1 1');
+        }
+      });
+
+      AFRAME.registerComponent('info-panel', {
+        init: function () {
+          var buttonEls = document.querySelectorAll('.menu-button');
+          var fadeBackgroundEl = this.fadeBackgroundEl = document.querySelector('#fadeBackground');
+          var gameImageEls = this.gameImageEls = {
+            nineSolsButton: document.querySelector('#nineSolsGameImage'),
+            hollowKnightButton: document.querySelector('#hollowKnightGameImage'),
+            blasphemousButton: document.querySelector('#blasphemousGameImage')
+          };
+          var gameTitleEl = document.querySelector('#gameTitle');
+          var gameDescriptionEl = document.querySelector('#gameDescription');
+          var infoPanelEl = this.el;
+
+          var gameInfo = {
+            nineSolsButton: {
+              title: 'Nine Sols (2024)',
+              description: 'Nine Sols is a lore-rich, hand-drawn 2D action-platformer featuring Sekiro-inspired deflection-focused combat. Embark on a journey through Eastern fantasy.'
+            },
+            hollowKnightButton: {
+              title: 'Hollow Knight (2017)',
+              description: 'Forge your own path in Hollow Knight! An epic action adventure through a vast ruined kingdom of insects and heroes. Explore twisting caverns and battle tainted creatures.'
+            },
+            blasphemousButton: {
+              title: 'Blasphemous (2019)',
+              description: 'Blasphemous is a punishing action-platformer that combines the fast-paced, skilled combat of a hack-n-slash game with a deep and evocative narrative core.'
+            }
+          };
+
+          this.onButtonNeedsUpdate = this.onButtonNeedsUpdate.bind(this);
+          this.onBackgroundClick = this.onBackgroundClick.bind(this);
+
+          for (var i = 0; i < buttonEls.length; i++) {
+            buttonEls[i].addEventListener('click', this.onButtonNeedsUpdate);
+          }
+          
+          var backgroundEl = document.querySelector('#background');
+          backgroundEl.addEventListener('click', this.onBackgroundClick);
+        },
+
+        onButtonNeedsUpdate: function (evt) {
+          var buttonId = evt.currentTarget.id;
+          var gameImageEls = this.gameImageEls;
+          var infoPanelEl = this.el;
+
+          for (var key in gameImageEls) {
+            gameImageEls[key].setAttribute('visible', false);
+          }
+
+          if (gameImageEls[buttonId]) {
+            gameImageEls[buttonId].setAttribute('visible', true);
+          }
+
+          var gameTitleEl = document.querySelector('#gameTitle');
+          var gameDescriptionEl = document.querySelector('#gameDescription');
+          var gameData = {
+            nineSolsButton: {
+              title: 'Nine Sols (2024)',
+              description: 'Nine Sols is a lore-rich, hand-drawn 2D action-platformer featuring Sekiro-inspired deflection-focused combat. Embark on a journey through Taomanism.'
+            },
+            hollowKnightButton: {
+              title: 'Hollow Knight (2017)',
+              description: 'Forge your own path in Hollow Knight! An epic action adventure through a vast ruined kingdom of insects and heroes.'
+            },
+            blasphemousButton: {
+              title: 'Blasphemous (2019)',
+              description: 'Blasphemous is a punishing action-platformer that combines the fast-paced, skilled combat of a hack-n-slash game.'
+            }
+          }[buttonId];
+
+          if (gameData) {
+            gameTitleEl.setAttribute('text', 'value', gameData.title);
+            gameDescriptionEl.setAttribute('text', 'value', gameData.description);
+          }
+
+          infoPanelEl.setAttribute('visible', true);
+          infoPanelEl.setAttribute('scale', '1 1 1');
+          this.fadeBackgroundEl.setAttribute('visible', true);
+          document.querySelector('#background').setAttribute('visible', true);
+        },
+
+        onBackgroundClick: function () {
+          this.el.setAttribute('visible', false);
+          this.el.setAttribute('scale', '0.001 0.001 0.001');
+          this.fadeBackgroundEl.setAttribute('visible', false);
+          document.querySelector('#background').setAttribute('visible', false);
+        }
+      });
+    </script>
+  </head>
+  <body>
+    <a-scene
+      background="color: #212"
+      environment
+      cursor="rayOrigin: mouse; fuse: false" raycaster="objects: .raycastable">
+      <a-assets>
+        <!-- Nine Sols -->
+        <img id="nineSols" src="https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1809540/ss_82027cbc20c7c1ba76898fa07e2c9657870b8b13.1920x1080.jpg?t=1782464830" crossorigin="anonymous"/>
+        <img id="nineSolsPoster" src="https://store-images.s-microsoft.com/image/apps.45976.14000456863863255.e1180b2d-029d-4c02-9385-6ad73421ad63.508279c9-acdd-45b3-9321-9d8f45feb958" crossorigin="anonymous"/>
+
+        <!-- Hollow Knight -->
+        <img id="hollowKnight" src="https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/367520/ss_5384f9f8b96a0b9934b2bc35a4058376211636d2.1920x1080.jpg?t=1776125684" crossorigin="anonymous"/>
+        <img id="hollowKnightPoster" src="https://cdn2.steamgriddb.com/grid/d18c832e8c956b4ef8b92862e6bf470d.png" crossorigin="anonymous"/>
+
+        <!-- Blasphemous -->
+        <img id="blasphemous" src="https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/774361/ss_67e9de6ea4dc169d21aaacb3d8625e2e0b3e025d.1920x1080.jpg?t=1780479368" crossorigin="anonymous"/>
+        <img id="blasphemousPoster" src="https://cdn2.steamgriddb.com/grid/d220b363fa173729b6b2851776d4e6db.png" crossorigin="anonymous"/>
+
+        <a-mixin
+          id="frame"
+          geometry="primitive: plane; width: 0.5783552; height: 0.8192"
+          material="color: white; shader: standard;"
+          animation__scale="property: scale; to: 1.4 1.4 1.4; dur: 100; startEvents: mouseenter"
+          animation__scale_reverse="property: scale; to: 1 1 1; dur: 200; startEvents: mouseleave"
+        ></a-mixin>
+        <a-mixin
+          id="poster"
+          geometry="primitive: plane; width: 0.544768; height: 0.786432"
+          material="shader: standard;"
+          position="0 0 0.005"
+        ></a-mixin>
+        <a-mixin
+          id="gameImage"
+          geometry="primitive: plane; width: 1.5; height: 0.81"
+          material="shader: standard; transparent: true"
+          position="0 0.495 0.002"
+        ></a-mixin>
+      </a-assets>
+
+      <a-entity
+        id="background"
+        position="0 0 0"
+        geometry="primitive: sphere; radius: 2.0"
+        material="color: red; side: back; shader: flat"
+        scale="0.001 0.001 0.001"
+        visible="false" class="raycastable">
+      </a-entity>
+
+      <a-entity
+        position="0 1.6 0"
+        camera look-controls="magicWindowTrackingEnabled: false; touchEnabled: false; mouseEnabled: false">
+        <a-entity
+          id="fadeBackground"
+          geometry="primitive: sphere; radius: 2.5"
+          material="color: #999999; side: back; shader: flat; blending: subtractive;" visible="false">
+        </a-entity>
+      </a-entity>
+
+      <!-- Hand controls -->
+      <a-entity id="leftHand" laser-controls="hand: left" raycaster="objects: .raycastable"></a-entity>
+      <a-entity id="rightHand" laser-controls="hand: right" raycaster="objects: .raycastable" line="color: #118A7E"></a-entity>
+
+      <a-entity id="ui" position="0 1.6 -2.5">
+        <!-- Poster menu -->
+        <a-entity id="menu" highlight>
+          <a-entity id="blasphemousButton" position="-0.8 0 0" mixin="frame" class="raycastable menu-button">
+            <a-entity material="src: #blasphemousPoster;" mixin="poster"></a-entity>
+          </a-entity>
+
+          <a-entity id="nineSolsButton" position="0 0 0" mixin="frame" class="raycastable menu-button">
+            <a-entity material="src: #nineSolsPoster" mixin="poster"></a-entity>
+          </a-entity>
+
+          <a-entity id="hollowKnightButton" position="0.8 0 0" mixin="frame" class="raycastable menu-button">
+            <a-entity material="src: #hollowKnightPoster" mixin="poster"></a-entity>
+          </a-entity>
+        </a-entity>
+
+        <!-- Info panel of the selected game -->
+        <a-entity
+          id="infoPanel"
+          position="0 0 0.5"
+          info-panel
+          visible="false"
+          scale="0.001 0.001 0.001"
+          geometry="primitive: plane; width: 1.5; height: 1.8"
+          material="color: #333333; shader: standard; transparent: false" class="raycastable">
+          <a-entity id="hollowKnightGameImage" mixin="gameImage" material="src: #hollowKnight" visible="false"></a-entity>
+          <a-entity id="nineSolsGameImage" mixin="gameImage" material="src: #nineSols" visible="false"></a-entity>
+          <a-entity id="blasphemousGameImage" mixin="gameImage" material="src: #blasphemous" visible="false"></a-entity>
+          <a-entity id="gameTitle"
+            position="-0.68 -0.1 0"
+            text="shader: msdf; anchor: left; width: 1.5; font: https://cdn.aframe.io/examples/ui/Viga-Regular.json; color: white; value: Select a Game"></a-entity>
+          <a-entity id="gameDescription"
+            position="-0.68 -0.2 0"
+            text="baseline: top; shader: msdf; anchor: left; font: https://cdn.aframe.io/examples/ui/Viga-Regular.json; color: white; value: ..."></a-entity>
+        </a-entity>
+      </a-entity>
+    </a-scene>
+  </body>
+</html>
